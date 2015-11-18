@@ -1,0 +1,4 @@
+OAuth2Server 0.8.2-dev1
+========================
+Initial public release, in development.
+Log issues and see milestones (roadmap) here: https://github.com/modxcms/oauth2-server/issues

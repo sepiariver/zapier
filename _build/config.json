@@ -1,0 +1,63 @@
+{
+    "name": "Zapier"
+    ,"lowCaseName": "zapier"
+    ,"description": "Integrate Zapier with MODX."
+    ,"author": "YJ Tso"
+    ,"version": "0.1.0-dev1"
+    ,"package":{
+        "menus": [
+          {
+            "text": "zapier.menu.manage",
+            "description": "zapier.menu.manage_desc",
+            "action": "manage"
+          }
+        ],
+        "elements": {
+            "snippets": [{
+                "name": "zapierPollSavedForms",
+                "file": "zapierpollsavedforms.snippet.php"
+                },{
+                "name": "zapierPollNewResources",
+                "file": "zapierpollnewresources.snippet.php"
+                },{
+                "name": "zapierAddSubscription",
+                "file": "zapieraddsubscription.snippet.php"
+                },{
+                "name": "zapierRemoveSubscription",
+                "file": "zapierremovesubscription.snippet.php"
+                },{
+                "name": "zapierSendFormToSubscribers",
+                "file": "zapiersendformtosubscribers.snippet.php"
+            }]
+        }
+        ,"resources": [{
+            "pagetitle": "Zapier Subscribe Endpoint"
+            ,"alias": "subscribe"
+            ,"template": "0"
+            ,"content_type": "7"
+            ,"published": "1"
+            ,"hidemenu": "1"
+            ,"cacheable": "0"
+            ,"richtext": "0"
+            ,"content": "[[!zapierAddSubscription]]"
+        },{
+            "pagetitle": "Zapier Unsubscribe Endpoint"
+            ,"alias": "unsubscribe"
+            ,"template": "0"
+            ,"content_type": "7"
+            ,"published": "1"
+            ,"hidemenu": "1"
+            ,"cacheable": "0"
+            ,"richtext": "0"
+            ,"content": "[[!zapierRemoveSubscription]]"
+        }]
+        ,"systemSettings": [{
+            "key": "zapier.enabled"
+            ,"value": "1"
+        }]
+    }
+    ,"database":{
+        "tables": ["ZapierSubscriptions"]
+    }
+    
+}
