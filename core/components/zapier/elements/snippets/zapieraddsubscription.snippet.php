@@ -28,13 +28,24 @@
 // OPTIONS
 $checkOAuth2ServerClientId = $modx->getOption('checkOAuth2ServerClientId', $scriptProperties, true);
 
-// Expected vars
-$expectedFields = array('target_url' => '', 'event' => '', 'access_token' => '', 'client_id' => '');
-$post = modX::sanitize($_POST, $modx->sanitizePatterns);
-$post = array_intersect_key($post, $expectedFields);
-
 // Get ready for output
 $success = array('success' => false);
+
+// Expected vars
+$expectedFields = array('target_url' => '', 'event' => '', 'access_token' => '', 'client_id' => '');
+$potentialGetParams = array('access_token' => '', 'client_id' => '');
+$get = modX::sanitize($_GET, $modx->sanitizePatterns);
+$get = array_intersect_key($get, $potentialGetParams);
+
+if (empty($_POST)) {
+    $post = file_get_contents('php://input');
+    if (empty($post)) return $modx->toJSON($success);
+    $post = $modx->fromJSON($post);
+} else {
+    $post = $_POST;
+}
+$post = modX::sanitize($post, $modx->sanitizePatterns);
+$post = array_intersect_key($post, $expectedFields);
 
 // We need these
 if (empty($post) || empty($post['target_url']) || empty($post['event'])) {
@@ -60,6 +71,7 @@ $exists = 0;
 if ($checkOAuth2ServerClientId) {
 
     // In order to check client_id we must have at least one of these
+    $post = array_merge($get, $post);
     if (empty($post['access_token']) && empty($post['client_id'])) return;
 
     // Paths

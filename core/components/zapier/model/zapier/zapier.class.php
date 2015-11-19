@@ -54,7 +54,7 @@ class Zapier
         ), $options);
         
      
-        $this->modx->addPackage('Zapier', $this->options['modelPath'], $this->modx->config['table_prefix']);
+        $this->modx->addPackage('zapier', $this->options['modelPath'], $this->modx->config['table_prefix']);
         $this->modx->lexicon->load('zapier:default');
                
     }
