@@ -8,6 +8,8 @@
 class ZapierSubscriptionsGetListProcessor extends modObjectGetListProcessor {
     public $classKey = 'ZapierSubscriptions';
     public $languageTopics = array('zapier:default');
+    public $defaultSortField = 'id';
+    public $defaultSortDirection = 'ASC';
     public $objectType = 'zapier.subscriptions';
     /** @var ZapierSubscriptions */
     public $object;

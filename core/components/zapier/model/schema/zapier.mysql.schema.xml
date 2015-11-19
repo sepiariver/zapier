@@ -4,8 +4,5 @@
         <field key="target_url" dbtype="varchar" precision="2000" phptype="string" null="false" default="" />
         <field key="event" dbtype="varchar" precision="100" phptype="string" />
         <field key="client_id" dbtype="varchar" precision="80" phptype="string" />
-        <index alias="target_url" name="target_url" primary="false" unique="true" type="BTREE">
-            <column key="target_url" length="" collation="A" null="false" />
-        </index>
     </object>
 </model>

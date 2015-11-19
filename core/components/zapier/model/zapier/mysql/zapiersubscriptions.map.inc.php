@@ -43,7 +43,6 @@ $xpdo_meta_map['ZapierSubscriptions']= array (
       'alias' => 'target_url',
       'primary' => false,
       'unique' => true,
-      'type' => 'BTREE',
       'columns' => 
       array (
         'target_url' => 
