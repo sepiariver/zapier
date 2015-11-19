@@ -29,12 +29,19 @@
 $checkOAuth2ServerClientId = $modx->getOption('checkOAuth2ServerClientId', $scriptProperties, true);
 
 // Expected vars
-$expectedFields = array('access_token' => '', 'target_url' => '', 'event' => '', 'client_id' => '');
+$expectedFields = array('target_url' => '', 'event' => '', 'access_token' => '', 'client_id' => '');
 $post = modX::sanitize($_POST, $modx->sanitizePatterns);
 $post = array_intersect_key($post, $expectedFields);
 
-// If no valid data just exit quietly
-if (empty($post)) return; 
+// Get ready for output
+$success = array('success' => false);
+
+// We need these
+if (empty($post) || empty($post['target_url'] || empty($post['event']))) {
+    
+    $success['message'] = 'target_url and event parameters are required';
+    return $modx->toJSON($success);
+}  
 
 // Paths
 $zapierPath = $modx->getOption('zapier.core_path', null, $modx->getOption('core_path') . 'components/zapier/');
@@ -46,9 +53,6 @@ if (!($zapier instanceof Zapier)) {
     $modx->log(modX::LOG_LEVEL_ERROR, '[zapierAddSubscription] could not load the required Zapier class!');
     return;
 }
-
-// Get ready for output
-$success = array('success' => false);
 
 // Check client_id if specified
 $clientId = null;

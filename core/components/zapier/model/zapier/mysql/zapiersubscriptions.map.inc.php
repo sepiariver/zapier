@@ -10,7 +10,7 @@ $xpdo_meta_map['ZapierSubscriptions']= array (
   'fields' => 
   array (
     'target_url' => '',
-    'event' => NULL,
+    'event' => '',
     'client_id' => NULL,
   ),
   'fieldMeta' => 
@@ -28,6 +28,8 @@ $xpdo_meta_map['ZapierSubscriptions']= array (
       'dbtype' => 'varchar',
       'precision' => '100',
       'phptype' => 'string',
+      'null' => false,
+      'default' => '',
     ),
     'client_id' => 
     array (

@@ -2,7 +2,7 @@
 <model package="zapier" baseClass="xPDOObject" platform="mysql" defaultEngine="MyISAM" phpdoc-package="zapier" version="0.1">
     <object class="ZapierSubscriptions" table="zapier_subscriptions" extends="xPDOSimpleObject">
         <field key="target_url" dbtype="varchar" precision="2000" phptype="string" null="false" default="" />
-        <field key="event" dbtype="varchar" precision="100" phptype="string" />
+        <field key="event" dbtype="varchar" precision="100" phptype="string" null="false" default="" />
         <field key="client_id" dbtype="varchar" precision="80" phptype="string" />
     </object>
 </model>
