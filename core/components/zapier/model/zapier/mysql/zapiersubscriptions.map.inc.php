@@ -36,22 +36,4 @@ $xpdo_meta_map['ZapierSubscriptions']= array (
       'phptype' => 'string',
     ),
   ),
-  'indexes' => 
-  array (
-    'target_url' => 
-    array (
-      'alias' => 'target_url',
-      'primary' => false,
-      'unique' => true,
-      'columns' => 
-      array (
-        'target_url' => 
-        array (
-          'length' => '',
-          'collation' => 'A',
-          'null' => false,
-        ),
-      ),
-    ),
-  ),
 );

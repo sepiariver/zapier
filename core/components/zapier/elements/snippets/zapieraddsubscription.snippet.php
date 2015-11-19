@@ -29,7 +29,7 @@
 $checkOAuth2ServerClientId = $modx->getOption('checkOAuth2ServerClientId', $scriptProperties, true);
 
 // Expected vars
-$expectedFields = array('access_token' => '', 'target_url' => '', 'event' => '');
+$expectedFields = array('access_token' => '', 'target_url' => '', 'event' => '', 'client_id' => '');
 $post = modX::sanitize($_POST, $modx->sanitizePatterns);
 $post = array_intersect_key($post, $expectedFields);
 
@@ -54,7 +54,10 @@ $success = array('success' => false);
 $clientId = null;
 $exists = 0;
 if ($checkOAuth2ServerClientId) {
-    
+
+    // In order to check client_id we must have at least one of these
+    if (empty($post['access_token']) && empty($post['client_id'])) return;
+
     // Paths
     $oauth2Path = $modx->getOption('oauth2server.core_path', null, $modx->getOption('core_path') . 'components/oauth2server/');
     $oauth2Path .= 'model/oauth2server/';
@@ -65,18 +68,28 @@ if ($checkOAuth2ServerClientId) {
         $modx->log(modX::LOG_LEVEL_ERROR, '[zapierAddSubscription] could not load the OAuth2Server class!');
         return;
     }
-
-    // Get client_id from token, cause that's all we have
-    $token = $modx->getObject('OAuth2ServerAccessTokens', array('access_token' => $post['access_token']));
-    if (!$token) return;
     
-    // We can finally check for client_id
-    $clientId = $token->get('client_id');
-    if (!$clientId) return;
+    if (!$post['client_id']) {
+        
+        // Get client_id from token, cause that's all we have
+        $token = $modx->getObject('OAuth2ServerAccessTokens', array('access_token' => $post['access_token']));
+        if (!$token) return;
+    
+        // We can finally check for client_id
+        $clientId = $token->get('client_id');
+        
+        // If after all that we still don't have it, escape (because $checkOAuth2ServerClientId was true)
+        if (!$clientId) return;
+        
+    } else {
+        $clientId = $post['client_id'];
+    }
+
     $exists = $modx->getCount('ZapierSubscriptions', array(
-            'target_url' => $post['target_url'],
-            'client_id' => $clientId,
-            ));
+        'target_url' => $post['target_url'],
+        'client_id' => $clientId,
+    ));
+    
 } else {
     // If we don't care about the client_id we run a wider query
     $exists = $modx->getCount('ZapierSubscriptions', array('target_url' => $post['target_url']));
@@ -90,10 +103,13 @@ if ($exists > 0) {
 
 // Otherwise, if this is a new subscription, create it
 $subscription = $modx->newObject('ZapierSubscriptions');
-$post['client_id'] = $clientId;
+if (empty($post['client_id'])) $post['client_id'] = $clientId;
 $subscription->fromArray($post);
+
+// Attempt to save
 if ($subscription->save()) {
     $success['success'] = true;
+    $success['id'] = $subscription->get('id');
 } else {
     $success['message'] = 'Unknown error. The subscription could not be saved.';
 }
