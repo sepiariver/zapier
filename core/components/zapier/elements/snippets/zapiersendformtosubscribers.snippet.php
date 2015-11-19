@@ -24,4 +24,35 @@
  * Place, Suite 330, Boston, MA 02111-1307 USA
  **/
 
+// We need some things
 if (!$hook) return false;
+$config = $formit->config;
+$values = $hook->getValues();
+$eventName = $getOption('zapierEventName', $config, 'new_form');
+
+if (empty($values) || empty($eventName)) return;
+
+// Paths
+$zapierPath = $modx->getOption('zapier.core_path', null, $modx->getOption('core_path') . 'components/zapier/');
+$zapierPath .= 'model/zapier/';
+
+// Get Classes
+if (file_exists($zapierPath . 'zapier.class.php')) $zapier = $modx->getService('zapier', 'Zapier', $zapierPath, $scriptProperties);
+if (!($zapier instanceof Zapier)) {
+    $modx->log(modX::LOG_LEVEL_ERROR, '[zapierAddSubscription] could not load the required Zapier class!');
+    return;
+}
+
+// Get Subscriptions
+$subscriptions = $modx->getCollection('ZapierSubscriptions', array('event' => $eventName));
+
+// Do stuff
+foreach ($subscriptions as $sub) {
+    
+    // If some some weird reason we don't have a target_url we gotta get out
+    if (!$sub->get('target_url')) continue;
+    
+    
+}
+
+
