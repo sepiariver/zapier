@@ -37,6 +37,9 @@ class Zapier
         $assetsPath = $this->getOption('assets_path', $options, $this->modx->getOption('assets_path', null, MODX_ASSETS_PATH) . 'components/zapier/');
         $assetsUrl = $this->getOption('assets_url', $options, $this->modx->getOption('assets_url', null, MODX_ASSETS_URL) . 'components/zapier/');
         $dbPrefix = $this->getOption('table_prefix', $options, $this->modx->getOption('table_prefix', null, 'modx_'));
+        $oauth2Path = $this->getOption('oauth2server.core_path', $this->modx->config, $this->modx->getOption('core_path', null, MODX_CORE_PATH) . 'components/oauth2server/');
+        $oauth2Path .= 'model/oauth2server/';
+        
         
         /* load config defaults */
         $this->options = array_merge(array(
@@ -51,6 +54,9 @@ class Zapier
             'jsUrl' => $assetsUrl . 'js/',
             'cssUrl' => $assetsUrl . 'css/',
             'connectorUrl' => $assetsUrl . 'connector.php',
+            'oauth2Path' => $oauth2Path,
+            'expectedPostFields' => 'target_url,event,access_token,client_id',
+            'potentialGetParams' => 'access_token,client_id',
         ), $options);
         
      
@@ -58,9 +64,68 @@ class Zapier
         $this->modx->lexicon->load('zapier:default');
                
     }
-
-
     
+    
+    /**
+     * getRequestVars
+     *
+     * build an array of request variables
+     * @param string $action Adds ID to returned array if set to 'remove'
+     * return array Merged get and post
+     *
+     **/
+    public function getRequestVars($action = '') {
+        
+        // Expected vars
+        $expectedPostFields = array_flip($this->explodeAndClean($this->options['expectedPostFields']));
+        $potentialGetParams = array_flip($this->explodeAndClean($this->options['potentialGetParams']));
+        
+        if ($action === 'remove') $expectedPostFields['id'] = '';
+        
+        $get = modX::sanitize($_GET, $this->modx->sanitizePatterns);
+        $get = array_intersect_key($get, $potentialGetParams);
+        
+        if (empty($_POST)) {
+            // we may have raw post data as JSON string
+            $post = file_get_contents('php://input');
+            if (empty($post)) return false;
+            $post = $this->modx->fromJSON($post);
+        } else {
+            $post = $_POST;
+        }
+        $post = modX::sanitize($post, $this->modx->sanitizePatterns);
+        $post = array_intersect_key($post, $expectedPostFields);
+        
+        return array_merge($get, $post);
+        
+    }
+    
+    /**
+     * getClientId
+     *
+     * Calls OAuth2Server class to fetch client_id from OAuth2ServerAccessTokens object
+     * @param array $config optional
+     * @param string $access_token access token value
+     * @return string clientId
+     *
+     **/
+    public function getClientId($access_token, $config = array()) {
+      
+        // Get Class
+        if (file_exists($this->options['oauth2Path'] . 'oauth2server.class.php')) $oauth2 = $this->modx->getService('oauth2server', 'OAuth2Server', $this->options['oauth2Path'], $config);
+        if (!($oauth2 instanceof OAuth2Server)) {
+            $this->modx->log(modX::LOG_LEVEL_ERROR, '[Zapier] getClientId method could not load the OAuth2Server class!');
+            return '';
+        }
+
+        // Get client_id from token, cause that's all we have
+        $token = $this->modx->getObject('OAuth2ServerAccessTokens', array('access_token' => $access_token));
+        if (!$token) return '';
+    
+        // We can finally check for client_id
+        return $token->get('client_id');
+        
+    }
      
     /* UTILITY METHODS (@theboxer) */
     /**

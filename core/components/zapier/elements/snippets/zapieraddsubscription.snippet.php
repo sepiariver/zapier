@@ -31,29 +31,6 @@ $checkOAuth2ServerClientId = $modx->getOption('checkOAuth2ServerClientId', $scri
 // Get ready for output
 $success = array('success' => false);
 
-// Expected vars
-$expectedFields = array('target_url' => '', 'event' => '', 'access_token' => '', 'client_id' => '');
-$potentialGetParams = array('access_token' => '', 'client_id' => '');
-$get = modX::sanitize($_GET, $modx->sanitizePatterns);
-$get = array_intersect_key($get, $potentialGetParams);
-
-if (empty($_POST)) {
-    $post = file_get_contents('php://input');
-    if (empty($post)) return $modx->toJSON($success);
-    $post = $modx->fromJSON($post);
-} else {
-    $post = $_POST;
-}
-$post = modX::sanitize($post, $modx->sanitizePatterns);
-$post = array_intersect_key($post, $expectedFields);
-
-// We need these
-if (empty($post) || empty($post['target_url']) || empty($post['event'])) {
-    
-    $success['message'] = 'target_url and event parameters are required';
-    return $modx->toJSON($success);
-}  
-
 // Paths
 $zapierPath = $modx->getOption('zapier.core_path', null, $modx->getOption('core_path') . 'components/zapier/');
 $zapierPath .= 'model/zapier/';
@@ -65,50 +42,43 @@ if (!($zapier instanceof Zapier)) {
     return;
 }
 
+// Create request object from $_POST and $_GET
+$request = $zapier->getRequestVars();
+
+// We need these
+if (!$request || empty($request['target_url']) || empty($request['event'])) {
+    
+    $success['message'] = 'target_url and event parameters are required';
+    return $modx->toJSON($success);
+}  
+
 // Check client_id if specified
 $clientId = null;
 $exists = 0;
 if ($checkOAuth2ServerClientId) {
 
     // In order to check client_id we must have at least one of these
-    $post = array_merge($get, $post);
-    if (empty($post['access_token']) && empty($post['client_id'])) return;
+    if (empty($request['access_token']) && empty($request['client_id'])) return;
+    
+    if (!$request['client_id']) {
+        
+        $clientId = $zapier->getClientId($request['access_token']);    
 
-    // Paths
-    $oauth2Path = $modx->getOption('oauth2server.core_path', null, $modx->getOption('core_path') . 'components/oauth2server/');
-    $oauth2Path .= 'model/oauth2server/';
-    
-    // Get Class
-    if (file_exists($oauth2Path . 'oauth2server.class.php')) $oauth2 = $modx->getService('oauth2server', 'OAuth2Server', $oauth2Path, $scriptProperties);
-    if (!($oauth2 instanceof OAuth2Server)) {
-        $modx->log(modX::LOG_LEVEL_ERROR, '[zapierAddSubscription] could not load the OAuth2Server class!');
-        return;
-    }
-    
-    if (!$post['client_id']) {
-        
-        // Get client_id from token, cause that's all we have
-        $token = $modx->getObject('OAuth2ServerAccessTokens', array('access_token' => $post['access_token']));
-        if (!$token) return;
-    
-        // We can finally check for client_id
-        $clientId = $token->get('client_id');
-        
         // If after all that we still don't have it, escape (because $checkOAuth2ServerClientId was true)
         if (!$clientId) return;
         
     } else {
-        $clientId = $post['client_id'];
+        $clientId = $request['client_id'];
     }
 
     $exists = $modx->getCount('ZapierSubscriptions', array(
-        'target_url' => $post['target_url'],
+        'target_url' => $request['target_url'],
         'client_id' => $clientId,
     ));
     
 } else {
     // If we don't care about the client_id we run a wider query
-    $exists = $modx->getCount('ZapierSubscriptions', array('target_url' => $post['target_url']));
+    $exists = $modx->getCount('ZapierSubscriptions', array('target_url' => $request['target_url']));
 }
 
 // If we found a match we have to escape
@@ -119,8 +89,12 @@ if ($exists > 0) {
 
 // Otherwise, if this is a new subscription, create it
 $subscription = $modx->newObject('ZapierSubscriptions');
-if (empty($post['client_id'])) $post['client_id'] = $clientId;
-$subscription->fromArray($post);
+if (empty($request['client_id'])) $request['client_id'] = $clientId;
+if (!$subscription) {
+    $modx->log(modX::LOG_LEVEL_ERROR, '[zapierAddSubscription] could not create subscription object!');
+    return;
+} 
+$subscription->fromArray($request);
 
 // Attempt to save
 if ($subscription->save()) {
