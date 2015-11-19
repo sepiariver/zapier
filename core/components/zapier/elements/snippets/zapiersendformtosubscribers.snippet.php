@@ -30,6 +30,7 @@ $returnTrueOnFail = (bool) $modx->getOption('zapierReturnTrueOnFail', $formit->c
 // We need some things
 if (!$hook) return $returnTrueOnFail;
 $values = $hook->getValues();
+$values = $modx->toJSON($values);
 $eventName = $getOption('zapierEventName', $formit->config, 'new_form');
 if (empty($values) || empty($eventName)) return $returnTrueOnFail;
 
@@ -65,10 +66,12 @@ foreach ($subscriptions as $sub) {
     // cURL request to post form data
     $ch = curl_init();
     curl_setopt($ch, CURLOPT_HEADER, 1);
+    curl_setopt($ch, CURLOPT_HTTPHEADER, array('Content-Type: application/json'));
     curl_setopt($ch, CURLOPT_RETURNTRANSFER, 0);
     curl_setopt($ch, CURLOPT_URL, $sub->get('target_url'));
     curl_setopt($ch, CURLOPT_FOLLOWLOCATION, 1);
     curl_setopt($ch, CURLOPT_POST, 1);
+    curl_setopt($ch, CURLOPT_POSTFIELDS, $values);
     curl_setopt($ch, CURLOPT_CONNECTTIMEOUT_MS, 2500);
     curl_setopt($ch, CURLOPT_TIMEOUT_MS, 7500);
     
