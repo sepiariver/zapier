@@ -31,7 +31,7 @@ $returnTrueOnFail = (bool) $modx->getOption('zapierReturnTrueOnFail', $formit->c
 if (!$hook) return $returnTrueOnFail;
 $values = $hook->getValues();
 $values = $modx->toJSON($values);
-$eventName = $getOption('zapierEventName', $formit->config, 'new_form');
+$eventName = $modx->getOption('zapierEventName', $formit->config, 'new_form');
 if (empty($values) || empty($eventName)) return $returnTrueOnFail;
 
 // Paths
@@ -39,7 +39,7 @@ $zapierPath = $modx->getOption('zapier.core_path', null, $modx->getOption('core_
 $zapierPath .= 'model/zapier/';
 
 // Get Classes
-if (file_exists($zapierPath . 'zapier.class.php')) $zapier = $modx->getService('zapier', 'Zapier', $zapierPath, $scriptProperties);
+if (file_exists($zapierPath . 'zapier.class.php')) $zapier = $modx->getService('zapier', 'Zapier', $zapierPath);
 if (!($zapier instanceof Zapier)) {
     $modx->log(modX::LOG_LEVEL_ERROR, '[zapierSendFormToSubscribers] could not load the required Zapier class!');
     return $returnTrueOnFail;
@@ -47,6 +47,12 @@ if (!($zapier instanceof Zapier)) {
 
 // Get Subscriptions
 $subscriptions = $modx->getCollection('ZapierSubscriptions', array('event' => $eventName));
+
+if (!$subscriptions) {
+    $modx->log(modX::LOG_LEVEL_WARN, '[zapierSendFormToSubscribers] could not load any matching subscriptions');
+    return $returnTrueOnFail;
+}
+
 
 // Do stuff
 $successes = 0;
