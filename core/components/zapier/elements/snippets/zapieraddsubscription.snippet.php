@@ -37,7 +37,7 @@ $post = array_intersect_key($post, $expectedFields);
 $success = array('success' => false);
 
 // We need these
-if (empty($post) || empty($post['target_url'] || empty($post['event']))) {
+if (empty($post) || empty($post['target_url']) || empty($post['event'])) {
     
     $success['message'] = 'target_url and event parameters are required';
     return $modx->toJSON($success);
