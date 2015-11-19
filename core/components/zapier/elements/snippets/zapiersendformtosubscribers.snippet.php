@@ -25,4 +25,3 @@
  **/
 
 if (!$hook) return false;
-

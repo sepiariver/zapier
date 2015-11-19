@@ -21,12 +21,12 @@ zapier.grid.ZapierSubscriptions = function(config) {
             ,width: 160
         },{
             header: _('zapier.subscriptions.event')
-            ,dataIndex: 'expires'
+            ,dataIndex: 'event'
             ,sortable: true
             ,width: 60
         },{
             header: _('zapier.subscriptions.client_id')
-            ,dataIndex: 'scope'
+            ,dataIndex: 'client_id'
             ,sortable: true
             ,width: 60
         }]

@@ -25,3 +25,24 @@
  * Place, Suite 330, Boston, MA 02111-1307 USA
  **/
 
+// Options
+$expectedFields = array('access_token' => '', 'target_url' => '', 'event' => '');
+
+// Paths
+$zapierPath = $modx->getOption('zapier.core_path', null, $modx->getOption('core_path') . 'components/zapier/');
+$zapierPath .= 'model/zapier/';
+
+// Get Class
+if (file_exists($zapierPath . 'zapier.class.php')) $zapier = $modx->getService('zapier', 'Zapier', $zapierPath, $scriptProperties);
+if (!($zapier instanceof Zapier)) {
+    $modx->log(modX::LOG_LEVEL_ERROR, '[zapierAddSubscription] could not load the required class!');
+    return;
+}
+$post = modX::sanitize($_POST, $modx->sanitizePatterns);
+$post = array_intersect_key($post, $expectedFields);
+
+$subscription = $modx->newObject('ZapierSubscriptions');
+$subscription->fromArray($post);
+$success = array('success' => 'false');
+if ($subscription->save()) $success['success'] = 'true';
+return $modx->toJSON($success);

@@ -3,7 +3,7 @@
     ,"lowCaseName": "zapier"
     ,"description": "Integrate Zapier with MODX."
     ,"author": "YJ Tso"
-    ,"version": "0.1.0-dev1"
+    ,"version": "0.1.5-dev1"
     ,"package":{
         "menus": [
           {
