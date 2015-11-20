@@ -26,11 +26,14 @@ The authentication settings in your Zapier app need to be configured with the UR
 
 ## Usage
 
+### Quick Overview
+
+1. After setting up your Zapier app, you will be able to add a connection from the Zapier dashboard. This is the step where you authorize Zapier.
 The Zapier Extra installs with 5 Snippets.
 
 ### zapierAddSubscription
 
-This must be called in a published Resource, where Zapier can request subscriptions to the 
+This must be called in a published MODX Resource, where Zapier can request subscriptions.
 
 
 
