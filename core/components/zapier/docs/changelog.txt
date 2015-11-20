@@ -1,2 +1,3 @@
-Zapier 0.x
-==========
+Zapier 0.7.0-beta1
+==================
+Initial beta release.
