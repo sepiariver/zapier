@@ -38,7 +38,11 @@ The Zapier Extra installs with 5 Snippets and 1 Plugin.
 
 These allow Zapier to "subscribe" to services from your MODX site. Zapier provides a target URL for each subscription. The Zapier Extra in MODX is responsible for storing these target URLs, and the events on which to send a payload to each. You can manually remove a subscription using the Zapier Extra's Manager page (CMP) but generally your actions in the Zapier dashboard will result in the creation and deletion of subscriptions as needed.
 
-These two Snippets must be called in published MODX Resources, the URLs for which need to be entered into the Trigger Settings in your Zapier app.
+These two Snippets must be called in published MODX Resources, the URLs for which need to be entered into the Trigger Settings in your Zapier app. Upon installation, the Zapier Extra attempts to create these 2 Resources for you.
+
+### zapierSendFormToSubscribers / zapierPollSavedForms
+
+The first of these 2 Snippets is a FormIt hook. Upon form submission, it queries the ZapierSubscriptions table for target URLs for the "new_form" event. (The event name can be customized via Snippet properties if need be.) It will attempt to send serialized form data to each of those target URLs. Depending on the response from Zapier, it will either move to the next target URL or it will remove the subscription, because it has become invalid. There are a variety of reasons this might be the case, but suffice to say that Zapier strongly suggests removing unwanted subscriptions.
 
 
 
