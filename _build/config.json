@@ -3,7 +3,7 @@
     ,"lowCaseName": "zapier"
     ,"description": "Integrate Zapier with MODX."
     ,"author": "YJ Tso"
-    ,"version": "0.5.0-dev1"
+    ,"version": "0.6.0-dev1"
     ,"package":{
         "menus": [
           {
@@ -28,6 +28,11 @@
                 },{
                 "name": "zapierSendFormToSubscribers",
                 "file": "zapiersendformtosubscribers.snippet.php"
+            }],
+            "plugins": [{
+                "name": "ZapierSendResourcesToSubscribers"
+                ,"file": "zapiersendresourcestosubscribers.plugin.php"
+                ,"events": ["OnDocFormSave"]
             }]
         }
         ,"resources": [{

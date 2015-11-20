@@ -1,9 +1,8 @@
 <?php
 /**
- * zapierSendFormToSubscribers
+ * ZapierSendResourcesToSubscribers
  * 
- * Sends a FormIt form submission to Zapier Subscribers.
- * REQUIRES the FormIt Extra! Call this as a FormIt hook.
+ * Sends a MODX Resource's field values to Zapier Subscribers.
  * 
  * @package Zapier
  * @author @sepiariver <yj@modx.com>
@@ -24,15 +23,16 @@
  * Place, Suite 330, Boston, MA 02111-1307 USA
  **/
 
-// Pass control to next hook even if this one fails?
-$returnTrueOnFail = (bool) $modx->getOption('zapierReturnTrueOnFail', $formit->config, true);
+// Only fire in the mgr OnDocFormSave
+if ($modx->context->get('key') !== 'mgr' || $modx->event->name !== 'OnDocFormSave') return;
 
-// We need some things
-if (!$hook) return $returnTrueOnFail;
-$values = $hook->getValues();
-$values = $modx->toJSON($values);
-$eventName = $modx->getOption('zapierEventName', $formit->config, 'new_form');
-if (empty($values) || empty($eventName)) return $returnTrueOnFail;
+// We need this
+if (!$resource || empty($mode)) {
+    
+    $modx->log(modX::LOG_LEVEL_ERROR, '[ZapierSendResourcesToSubscribers] plugin missing required input on line: ' . __LINE__);
+    return;
+    
+}
 
 // Paths
 $zapierPath = $modx->getOption('zapier.core_path', null, $modx->getOption('core_path') . 'components/zapier/');
@@ -41,18 +41,32 @@ $zapierPath .= 'model/zapier/';
 // Get Classes
 if (file_exists($zapierPath . 'zapier.class.php')) $zapier = $modx->getService('zapier', 'Zapier', $zapierPath);
 if (!($zapier instanceof Zapier)) {
-    $modx->log(modX::LOG_LEVEL_ERROR, '[zapierSendFormToSubscribers] could not load the required Zapier class!');
-    return $returnTrueOnFail;
+    $modx->log(modX::LOG_LEVEL_ERROR, '[ZapierSendResourcesToSubscribers] could not load the required Zapier class!');
+    return;
 }
+
+// OPTIONS
+$sendOnModes = $modx->getOption('send_on_modes', $scriptProperties, 'upd,new');
+$sendOnModes = $zapier->explodeAndClean($sendOnModes);
+$eventName = $modx->getOption('zapierEventName', $scriptProperties, 'resource_save');
+
+// Abide by choice of mode
+if (!in_array($mode, $sendOnModes)) return;
+
+// Get field values
+$values = $resource->toArray();
+$values = $modx->toJSON($values);
+
+// These are also required to do anything
+if (empty($values) || empty($eventName)) return;
 
 // Get Subscriptions
 $subscriptions = $modx->getCollection('ZapierSubscriptions', array('event' => $eventName));
 
 if (!$subscriptions) {
-    $modx->log(modX::LOG_LEVEL_WARN, '[zapierSendFormToSubscribers] could not load any matching subscriptions');
-    return $returnTrueOnFail;
+    $modx->log(modX::LOG_LEVEL_WARN, '[ZapierSendResourcesToSubscribers] could not load any matching subscriptions');
+    return;
 }
-
 
 // Do stuff
 $successes = 0;
@@ -61,9 +75,9 @@ foreach ($subscriptions as $sub) {
     // If some some weird reason we don't have a target_url, it's a bad record and should be removed
     if (!$sub->get('target_url')) {
         if ($sub->remove()) {
-            $noTargetError = '[zapierSendFormToSubscribers] discovered a ZapierSubscriptions object with no target_url, and removed it.';
+            $noTargetError = '[ZapierSendResourcesToSubscribers] discovered a ZapierSubscriptions object with no target_url, and removed it.';
         } else {
-            $noTargetError = '[zapierSendFormToSubscribers] discovered a ZapierSubscriptions object ID: ' . $sub->get('id') . ' with no target_url, and failed to remove it.';
+            $noTargetError = '[ZapierSendResourcesToSubscribers] discovered a ZapierSubscriptions object ID: ' . $sub->get('id') . ' with no target_url, and failed to remove it.';
         }
         $modx->log(modX::LOG_LEVEL_ERROR, $noTargetError);
         continue;
@@ -87,7 +101,7 @@ foreach ($subscriptions as $sub) {
     
     // According to Zapier: https://zapier.com/developer/documentation/v2/rest-hooks/
     if ($response_code == '410') {
-        $modx->log(modX::LOG_LEVEL_ERROR, '[zapierSendFormToSubscribers] received a 410 from Zapier and removed the subscription ID: ' . $sub->get('id'));
+        $modx->log(modX::LOG_LEVEL_ERROR, '[ZapierSendResourcesToSubscribers] received a 410 from Zapier and removed the subscription ID: ' . $sub->get('id'));
         $sub->remove();
     } elseif ($response_code == '200') {
         $successes++;
@@ -95,6 +109,5 @@ foreach ($subscriptions as $sub) {
 
 }
 
-// If we got this far, we didn't fail
-if ($successes > 0) $returnTrueOnFail = true;
-return $returnTrueOnFail;
+// TODO: log manager action if success
+/*if ($successes > 0)*/
