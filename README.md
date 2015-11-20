@@ -32,7 +32,9 @@ The authentication settings in your Zapier app need to be configured with the UR
 2. The OAuth2Server Extra will send Zapier an authorization code, which Zapier can exchange for an access token. All further requests to your MODX site will be accompanied by this access token as a request parameter. 
 3. Once successfully connected, you can start adding triggers. As of version 0.7.x there are four available MODX triggers: 2 for form submissions and 2 for MODX Resources.
 
-The Zapier Extra installs with 5 Snippets and 1 Plugin.
+The Zapier Extra installs with 5 Snippets and 1 Plugin. 
+
+_IMPORTANT: these Snippets expose data from your website. It's strongly recommended to always call the [[!verifyOAuth2]] Snippet in your Resource/Template, before calling one of these Snippets, to ensure all requests are authorized._
 
 ### zapierAddSubscription / zapierRemoveSubscription
 
@@ -44,7 +46,8 @@ These two Snippets must be called in published MODX Resources, the URLs for whic
 
 The first of these 2 Snippets is a FormIt hook. Upon form submission, it queries the ZapierSubscriptions table for target URLs for the "new_form" event. (The event name can be customized via Snippet properties if need be.) It will attempt to send serialized form data to each of those target URLs. Depending on the response from Zapier, it will either move to the next target URL or it will remove the subscription, because it has become invalid. There are a variety of reasons this might be the case, but suffice to say that Zapier strongly suggests removing unwanted subscriptions.
 
+The 2nd Snippet will return a JSON response listing saved form submissions. Forms can be saved using the "FormItSaveForm" hook that comes with FormIt (as of version 2...). Calling this Snippet in a Resource creates a "polling" endpoint where Zapier can request data at any time. However this has the effect of increasing your server load, because Zapier is unaware of whether there is new data, and simply "polls" your site on an interval. The preferred usage is with a subscription, and the hook above.
 
-
+However, even if you're using the hook to send data live, it's good practice to save the form submissions in case something goes wrong.
 
 
