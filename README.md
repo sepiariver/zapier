@@ -34,9 +34,11 @@ The authentication settings in your Zapier app need to be configured with the UR
 
 The Zapier Extra installs with 5 Snippets and 1 Plugin.
 
-### zapierAddSubscription
+### zapierAddSubscription / zapierRemoveSubscription
 
-This must be called in a published MODX Resource, where Zapier can request subscriptions.
+These allow Zapier to "subscribe" to services from your MODX site. Zapier provides a target URL for each subscription. The Zapier Extra in MODX is responsible for storing these target URLs, and the events on which to send a payload to each. You can manually remove a subscription using the Zapier Extra's Manager page (CMP) but generally your actions in the Zapier dashboard will result in the creation and deletion of subscriptions as needed.
+
+These two Snippets must be called in published MODX Resources, the URLs for which need to be entered into the Trigger Settings in your Zapier app.
 
 
 
