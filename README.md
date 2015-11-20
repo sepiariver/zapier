@@ -22,14 +22,17 @@ The first thing you will need to do is authenticate your Zapier account, to acce
 
 ### Your Zapier App
 
-The authentication settings in your Zapier app need to be configured with the URLs for your OAuth2Server endpoints. You also need to create a Client ID and Client Secret (the OAuth2Server Extra makes this a button-click affair). Setting up your Zapier app is beyond the scope of this overview, but you can find some guidance [here]. If you have a subscription to MODX Cloud, submit a support request from the MODX Cloud Dashboard with the subject "Zapier App Template Request" and I'll invite you to my Zapier app, which has placeholders to enter your URLs.
+The authentication settings in your Zapier app need to be configured with the URLs for your OAuth2Server endpoints. You also need to create a Client ID and Client Secret (the OAuth2Server Extra makes this a button-click affair). Setting up your Zapier app is beyond the scope of this overview, but you can find some guidance [here]. If you have a subscription to MODX Cloud, submit a support request from the MODX Cloud Dashboard with the subject "Zapier App Template Request" and I'll invite you to my Zapier app, which has placeholders to enter your auth info and will save you a couple of hours.
 
 ## Usage
 
 ### Quick Overview
 
 1. After setting up your Zapier app, you will be able to add a connection from the Zapier dashboard. This is the step where you authorize Zapier.
-The Zapier Extra installs with 5 Snippets.
+2. The OAuth2Server Extra will send Zapier an authorization code, which Zapier can exchange for an access token. All further requests to your MODX site will be accompanied by this access token as a request parameter. 
+3. Once successfully connected, you can start adding triggers. As of version 0.7.x there are four available MODX triggers: 2 for form submissions and 2 for MODX Resources.
+
+The Zapier Extra installs with 5 Snippets and 1 Plugin.
 
 ### zapierAddSubscription
 
