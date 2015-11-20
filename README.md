@@ -23,3 +23,16 @@ The first thing you will need to do is authenticate your Zapier account, to acce
 ### Your Zapier App
 
 The authentication settings in your Zapier app need to be configured with the URLs for your OAuth2Server endpoints. You also need to create a Client ID and Client Secret (the OAuth2Server Extra makes this a button-click affair). Setting up your Zapier app is beyond the scope of this overview, but you can find some guidance [here]. If you have a subscription to MODX Cloud, submit a support request from the MODX Cloud Dashboard with the subject "Zapier App Template Request" and I'll invite you to my Zapier app, which has placeholders to enter your URLs.
+
+## Usage
+
+The Zapier Extra installs with 5 Snippets.
+
+### zapierAddSubscription
+
+This must be called in a published Resource, where Zapier can request subscriptions to the 
+
+
+
+
+
