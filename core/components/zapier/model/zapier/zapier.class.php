@@ -85,7 +85,7 @@ class Zapier
         $get = modX::sanitize($_GET, $this->modx->sanitizePatterns);
         $get = array_intersect_key($get, $potentialGetParams);
         
-        if (empty($_POST)) {
+        if (empty($_POST) || $_SERVER['CONTENT_TYPE'] === 'application/json') {
             // we may have raw post data as JSON string
             $post = file_get_contents('php://input');
             if (empty($post)) return false;
