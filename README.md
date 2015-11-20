@@ -50,4 +50,11 @@ The 2nd Snippet will return a JSON response listing saved form submissions. Form
 
 However, even if you're using the hook to send data live, it's good practice to save the form submissions in case something goes wrong.
 
+### ZapierSendResourceToSubscribers / zapierPollNewResources
+
+The first is a Plugin that fires when a Resource Edit form in the MODX Manager is saved. This could be when a Resource is created, updated, or both, depending on Plugin properties. "OnDocFormSave", the Plugin queries the ZapierSubscriptions table for target URLs for the event "resource_save" (the event name can be customized). As with the form sending Snippet, it may remove a subscription if sending the payload results in an error response.
+
+The 2nd is a Snippet that, when called in a Resource, creates a "polling" endpoint for newly created Resources. All the downsides of polling for new form submissions, described above, apply here. It's highly recommended that you use the subscription flow, and let the Plugin do its thing.
+
+As with forms, when using subscriptions, your Zapier app will require the polling Resources to be available as a "fallback".
 
