@@ -201,8 +201,8 @@ switch ($options[xPDOTransport::PACKAGE_ACTION]) {
     array (
     ),
     'link_attributes' => '',
-    'template' => '0',
-    'content_type' => '7',
+    'template' => 0,
+    'content_type' => 7,
     'published' => 1,
     'hidemenu' => 1,
     'cacheable' => 0,
@@ -232,8 +232,70 @@ switch ($options[xPDOTransport::PACKAGE_ACTION]) {
     array (
     ),
     'link_attributes' => '',
-    'template' => '0',
-    'content_type' => '7',
+    'template' => 0,
+    'content_type' => 7,
+    'published' => 1,
+    'hidemenu' => 1,
+    'cacheable' => 0,
+    'richtext' => 0,
+  ),
+  2 => 
+  array (
+    'pagetitle' => 'Zapier Poll New Resources',
+    'alias' => 'poll-new-resources',
+    'parent' => 0,
+    'content' => '[[!verifyOAuth2? &returnOnSuccess=``]][[zapierPollNewResources]]',
+    'context_key' => 'web',
+    'class_key' => 'modDocument',
+    'longtitle' => '',
+    'description' => '',
+    'isfolder' => 0,
+    'introtext' => '',
+    'deleted' => 0,
+    'menutitle' => '',
+    'hide_children_in_tree' => 0,
+    'show_in_tree' => 1,
+    'set_as_home' => 0,
+    'tvs' => 
+    array (
+    ),
+    'others' => 
+    array (
+    ),
+    'link_attributes' => '',
+    'template' => 0,
+    'content_type' => 7,
+    'published' => 1,
+    'hidemenu' => 1,
+    'cacheable' => 0,
+    'richtext' => 0,
+  ),
+  3 => 
+  array (
+    'pagetitle' => 'Zapier Poll Saved Forms',
+    'alias' => 'poll-saved-forms',
+    'parent' => 0,
+    'content' => '[[!verifyOAuth2? &returnOnSuccess=``]][[!FormIt? &preHooks=`zapierPollSavedForms`]][[!+fi.saved_forms]]',
+    'context_key' => 'web',
+    'class_key' => 'modDocument',
+    'longtitle' => '',
+    'description' => '',
+    'isfolder' => 0,
+    'introtext' => '',
+    'deleted' => 0,
+    'menutitle' => '',
+    'hide_children_in_tree' => 0,
+    'show_in_tree' => 1,
+    'set_as_home' => 0,
+    'tvs' => 
+    array (
+    ),
+    'others' => 
+    array (
+    ),
+    'link_attributes' => '',
+    'template' => 0,
+    'content_type' => 7,
     'published' => 1,
     'hidemenu' => 1,
     'cacheable' => 0,

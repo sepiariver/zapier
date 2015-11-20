@@ -3,7 +3,7 @@
     ,"lowCaseName": "zapier"
     ,"description": "Integrate Zapier with MODX."
     ,"author": "YJ Tso"
-    ,"version": "0.6.0-dev1"
+    ,"version": "0.6.2-dev1"
     ,"package":{
         "menus": [
           {
@@ -38,23 +38,43 @@
         ,"resources": [{
             "pagetitle": "Zapier Subscribe Endpoint"
             ,"alias": "subscribe"
-            ,"template": "0"
-            ,"content_type": "7"
-            ,"published": "1"
-            ,"hidemenu": "1"
-            ,"cacheable": "0"
-            ,"richtext": "0"
+            ,"template": 0
+            ,"content_type": 7
+            ,"published": 1
+            ,"hidemenu": 1
+            ,"cacheable": 0
+            ,"richtext": 0
             ,"content": "[[!zapierAddSubscription]]"
         },{
             "pagetitle": "Zapier Unsubscribe Endpoint"
             ,"alias": "unsubscribe"
-            ,"template": "0"
-            ,"content_type": "7"
-            ,"published": "1"
-            ,"hidemenu": "1"
-            ,"cacheable": "0"
-            ,"richtext": "0"
+            ,"template": 0
+            ,"content_type": 7
+            ,"published": 1
+            ,"hidemenu": 1
+            ,"cacheable": 0
+            ,"richtext": 0
             ,"content": "[[!zapierRemoveSubscription]]"
+        },{
+            "pagetitle": "Zapier Poll New Resources"
+            ,"alias": "poll-new-resources"
+            ,"template": 0
+            ,"content_type": 7
+            ,"published": 1
+            ,"hidemenu": 1
+            ,"cacheable": 0
+            ,"richtext": 0
+            ,"content": "[[!verifyOAuth2? &returnOnSuccess=``]][[zapierPollNewResources]]"
+        },{
+            "pagetitle": "Zapier Poll Saved Forms"
+            ,"alias": "poll-saved-forms"
+            ,"template": 0
+            ,"content_type": 7
+            ,"published": 1
+            ,"hidemenu": 1
+            ,"cacheable": 0
+            ,"richtext": 0
+            ,"content": "[[!verifyOAuth2? &returnOnSuccess=``]][[!FormIt? &preHooks=`zapierPollSavedForms`]][[!+fi.saved_forms]]"
         }]
         ,"systemSettings": [{
             "key": "zapier.enabled"

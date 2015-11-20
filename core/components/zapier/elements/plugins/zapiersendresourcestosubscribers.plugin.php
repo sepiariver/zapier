@@ -49,12 +49,23 @@ if (!($zapier instanceof Zapier)) {
 $sendOnModes = $modx->getOption('send_on_modes', $scriptProperties, 'upd,new');
 $sendOnModes = $zapier->explodeAndClean($sendOnModes);
 $eventName = $modx->getOption('zapierEventName', $scriptProperties, 'resource_save');
+$excludeFields = $modx->getOption('exclude_fields', $scriptProperties, '');
+$excludeFields = $zapier->explodeAndClean($excludeFields);
+$sendUnpublished = $modx->getOption('send_unpublished', $scriptProperties, 0);
+$limitToParents = $modx->getOption('limit_to_parents', $scriptProperties, '');
+$limitToParents = $zapier->explodeAndClean($limitToParents);
 
-// Abide by choice of mode
+// Abide by choices
 if (!in_array($mode, $sendOnModes)) return;
+if (!$sendUnpublished && !$resource->get('published')) return;
+if (!empty($limitToParents) && !in_array($resource->get('parent'), $limitToParents)) return;
 
 // Get field values
-$values = $resource->toArray();
+$values = $resource->toArray('',true,true);
+$values = array_diff_key($values, $excludeFields);
+foreach ($fields as $key => $val) {
+    $values[$key] = str_replace(array('[',']'), array('&#91;','&#92;'), $val);
+}
 $values = $modx->toJSON($values);
 
 // These are also required to do anything
