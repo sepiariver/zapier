@@ -48,7 +48,10 @@ The first of these 2 Snippets is a FormIt hook. Upon form submission, it queries
 
 The 2nd Snippet will return a JSON response listing saved form submissions. Forms can be saved using the "FormItSaveForm" hook that comes with FormIt (as of version 2...). Calling this Snippet in a Resource creates a "polling" endpoint where Zapier can request data at any time. However this has the effect of increasing your server load, because Zapier is unaware of whether there is new data, and simply "polls" your site on an interval. The preferred usage is with a subscription, and the hook above.
 
-However, even if you're using the hook to send data live, it's good practice to save the form submissions in case something goes wrong.
+_NOTES WHEN USING SUBSCRIPTIONS:_
+
+- Even if you're using the hook to send data live, it's good practice to save the form submissions in case something goes wrong.
+- Your Zapier app will require the polling Resource to be available as a "fallback". Also with forms the polling Resource serves a 2nd, important role: when setting up your trigger, the polling Resource provides sample data with which to map your fields to the consuming app, or "action" in Zapier. Since your forms can have arbitrary fields, it's vital that you setup the polling Resource, yet it's much preferred to use the subscription flow, for ongoing data exchange.
 
 ### ZapierSendResourceToSubscribers / zapierPollNewResources
 
@@ -56,5 +59,5 @@ The first is a Plugin that fires when a Resource Edit form in the MODX Manager i
 
 The 2nd is a Snippet that, when called in a Resource, creates a "polling" endpoint for newly created Resources. All the downsides of polling for new form submissions, described above, apply here. It's highly recommended that you use the subscription flow, and let the Plugin do its thing.
 
-As with forms, when using subscriptions, your Zapier app will require the polling Resources to be available as a "fallback".
+As with forms, when using subscriptions, your Zapier app will require the polling Resource to be available as a "fallback".
 
