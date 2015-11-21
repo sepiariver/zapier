@@ -82,7 +82,7 @@ At what step is it failing? Are you getting redirected to the form that asks you
 
 If not, check that you include the scheme "https:// before your URL. Using my app you don't do that, but when you setup your own app, you need to. 
 
-Also the "response_type" URL parameter must be set to "code". I can't remember if I appended it to the authorization URL or if I added it as an auth field—not at computer ATM.
+Also the "response_type" URL parameter must be set to "code". I can't remember if I appended it to the authorization URL or if I added it as an auth field in my Zapier app, but if you're setting up your own, ensure that param is sent.
 
 If you are getting the authorization form, and after clicking "yes" you get an error, check the OAuth2Server CMP to see if an access_token was in fact created.
 
