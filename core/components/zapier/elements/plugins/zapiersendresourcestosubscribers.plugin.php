@@ -48,7 +48,7 @@ if (!($zapier instanceof Zapier)) {
 // OPTIONS
 $sendOnModes = $modx->getOption('send_on_modes', $scriptProperties, 'upd,new');
 $sendOnModes = $zapier->explodeAndClean($sendOnModes);
-$eventName = $modx->getOption('zapierEventName', $scriptProperties, 'resource_save');
+$eventName = $modx->getOption('zapier_event_name', $scriptProperties, 'resource_save');
 $excludeFields = $modx->getOption('exclude_fields', $scriptProperties, '');
 $excludeFields = $zapier->explodeAndClean($excludeFields);
 $sendUnpublished = $modx->getOption('send_unpublished', $scriptProperties, 0);

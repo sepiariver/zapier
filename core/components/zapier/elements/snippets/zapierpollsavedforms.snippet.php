@@ -26,6 +26,8 @@
 
 if (!$hook) return false;
 
+$zapierSavedFormsKey = $modx->getOption('zapierSavedFormsKey', $scriptProperties, 'saved_forms');
+
 // Get forms
 $forms = $modx->getCollection('FormItForm');
 
@@ -42,5 +44,5 @@ foreach ($forms as $form) {
     $idx++;
 }
 $output = array_reverse($output);
-$hook->setValue('saved_forms', $modx->toJSON($output));
+$hook->setValue($zapierSavedFormsKey, $modx->toJSON($output));
 return true;

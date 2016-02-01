@@ -23,16 +23,16 @@
  * Place, Suite 330, Boston, MA 02111-1307 USA
  *
  * OPTIONS:
- * &parent -    (int) select the parent resource. Default value polls all resources, which
- *              can be a big query. Default 0
+ * &parent -    (string) comma-separated list of parent resources. Default value polls all 
+ *              resources, which can be a big query. Default ""
  * &sortby -    (string) the field on which to sort the result set. Default "publishedon"
  * &sortdir -   (string) the sort direction. Default "DESC"
  * note: zapier expects newly created objects to be listed in reverse chronological order
  * thus the default behaviour. Modifying the defaults can have unexpected results.
  *
  **/
-
-$parent = (int) $modx->getOption('parent', $scriptProperties, 0);
+$parents = array();
+$parents = array_filter(array_map('trim', explode(',', $modx->getOption('parent', $scriptProperties, ''))));
 $sortby = $modx->getOption('sortby', $scriptProperties, 'publishedon');
 $sortdir = $modx->getOption('sortdir', $scriptProperties, 'DESC');
 
@@ -44,9 +44,9 @@ $c->where(array(
     'deleted' => 0,
     
     ));
-if ($parent > 0) {
+if (!empty($parents)) {
     $c->where(array(
-       'parent' => $parent, 
+       'parent:IN' => $parents, 
     ));
 }
 $c->sortby($sortby, $sortdir);
