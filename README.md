@@ -74,6 +74,24 @@ _NOTES WHEN USING SUBSCRIPTIONS:_
 
 As with forms, when using subscriptions, your Zapier app will require the polling Resource to be available as a "fallback". Thus, the Zapier Extra will attempt to install a sample Resource for you.
 
+## Troubleshooting
+
+If you're having problems, try to isolate the cause by asking a few questions:
+
+At what step is it failing? Are you getting redirected to the form that asks you to authorize?
+
+If not, check that you include the scheme "https:// before your URL. Using my app you don't do that, but when you setup your own app, you need to. 
+
+Also the "response_type" URL parameter must be set to "code". I can't remember if I appended it to the authorization URL or if I added it as an auth field in my Zapier app, but if you're setting up your own, ensure that param is sent.
+
+If you are getting the authorization form, and after clicking "yes" you get an error, check the OAuth2Server CMP to see if an access_token was in fact created.
+
+If yes, your verification endpoint is failing. If no, the auth code delivery or the exchange for a token is failing.
+
+If the latter is the case, check that your Client ID and Client Secret don't have a trailing space character. Copy/pasting from the CMP can do this, for some unknown and aggravating reason.
+
+If your verification is failing, check that your app sends the access_token as a query parameter and NOT in the header. Token in header is not supported yet.
+
 ## Roadmap
 
 The [milestones](https://github.com/sepiariver/zapier/milestones) in the Github repo describe the intended direction for this Extra, although submitted [issues](https://github.com/sepiariver/zapier/issues) and [PRs](https://github.com/sepiariver/zapier/pulls) may change that.
