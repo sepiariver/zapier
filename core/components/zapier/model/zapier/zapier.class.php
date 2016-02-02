@@ -74,16 +74,14 @@ class Zapier
      * return array Merged get and post
      *
      **/
-    public function getRequestVars($action = '') {
+    public function getRequestVars($action = '', $checkExpectedPostFields = true, $checkExpectedGetParams = true) {
         
         // Expected vars
         $expectedPostFields = array_flip($this->explodeAndClean($this->options['expectedPostFields']));
         $potentialGetParams = array_flip($this->explodeAndClean($this->options['potentialGetParams']));
         
-        if ($action === 'remove') $expectedPostFields['id'] = '';
-        
         $get = modX::sanitize($_GET, $this->modx->sanitizePatterns);
-        $get = array_intersect_key($get, $potentialGetParams);
+        if ($checkExpectedGetParams) $get = array_intersect_key($get, $potentialGetParams);
         
         if (empty($_POST) || $_SERVER['CONTENT_TYPE'] === 'application/json') {
             // we may have raw post data as JSON string
@@ -94,7 +92,11 @@ class Zapier
             $post = $_POST;
         }
         $post = modX::sanitize($post, $this->modx->sanitizePatterns);
-        $post = array_intersect_key($post, $expectedPostFields);
+        if ($checkExpectedPostFields) {
+            $post = array_intersect_key($post, $expectedPostFields);
+        }
+        
+        if ($action === 'remove') $post['id'] = '';
         
         return array_merge($get, $post);
         

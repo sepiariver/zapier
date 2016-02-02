@@ -31,6 +31,9 @@
                 },{
                 "name": "zapierUpdateResource",
                 "file": "zapierupdateresource.snippet.php"
+                },{
+                "name": "zapierPostToFile",
+                "file": "zapierposttofile.snippet.php"
             }],
             "plugins": [{
                 "name": "ZapierSendResourcesToSubscribers"
