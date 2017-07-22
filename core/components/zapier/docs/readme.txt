@@ -24,23 +24,23 @@ The first thing you will need to do is authenticate your Zapier account, to acce
 
 ### Your Zapier App
 
-The authentication settings in your Zapier app need to be configured with the URLs for your OAuth2Server endpoints. You also need to create a Client ID and Client Secret (the OAuth2Server Extra makes this a button-click affair). 
+The authentication settings in your Zapier app need to be configured with the URLs for your OAuth2Server endpoints. You also need to create a Client ID and Client Secret (the OAuth2Server Extra makes this a button-click affair).
 
 Setting up your Zapier app (in the Zapier dashboard) is beyond the scope of this overview, but you can find some guidance [here](https://github.com/sepiariver/zapier/wiki/Inside-Zapier). If you have a subscription to [MODX Cloud](https://modxcloud.com/), submit a support request from the MODX Cloud Dashboard with the subject "Zapier App Template Request" and I'll invite you to my Zapier app, which has placeholders to enter your auth info and will save you a couple of hours.
 
-![Pre-made Zapier App](https://www.dropbox.com/s/o7uwnir1gneleyw/Screenshot%202015-11-20%2015.09.14.png?dl=1)
+![Pre-made Zapier App](https://www.sepiariver.ca/assets/uploads/images/Screenshot%202015-11-20%2015.09.14.png?dl=1)
 
 ## Usage
 
 ### Quick Overview
 
-1. After setting up your Zapier app, you will be able to add a connection from the Zapier dashboard. This is the step where you authorize Zapier. 
-![Zapier Add Connection](https://www.dropbox.com/s/4sxdi08fco5vzio/Screenshot%202015-11-20%2015.03.01.png?dl=1)
-2. The OAuth2Server Extra will send Zapier an authorization code, which Zapier can exchange for an access token. All further requests to your MODX site will be accompanied by this access token as a request parameter. 
-3. Once successfully connected, you can start adding triggers. As of version 0.7.x there are four available MODX triggers: 2 for form submissions and 2 for MODX Resources. 
-![MODX Triggers for Zapier](https://www.dropbox.com/s/ftfhp7kxqgu18ia/Screenshot%202015-11-20%2015.05.12.png?dl=1)
+1. After setting up your Zapier app, you will be able to add a connection from the Zapier dashboard. This is the step where you authorize Zapier.
+![Zapier Add Connection](https://www.sepiariver.ca/assets/uploads/images/Screenshot%202015-11-20%2015.03.01.png?dl=1)
+2. The OAuth2Server Extra will send Zapier an authorization code, which Zapier can exchange for an access token. All further requests to your MODX site will be accompanied by this access token as a request parameter.
+3. Once successfully connected, you can start adding triggers. As of version 0.7.x there are four available MODX triggers: 2 for form submissions and 2 for MODX Resources.
+![MODX Triggers for Zapier](https://www.sepiariver.ca/assets/uploads/images/Screenshot%202015-11-20%2015.05.12.png?dl=1)
 
-The Zapier Extra installs with 5 Snippets and 1 Plugin. 
+The Zapier Extra installs with 5 Snippets and 1 Plugin.
 
 _IMPORTANT: these Snippets expose data from your website. It's strongly recommended to always call the [[!verifyOAuth2]] Snippet in your Resource/Template, before calling one of these Snippets, to ensure all requests are authorized._
 
@@ -48,11 +48,11 @@ _IMPORTANT: these Snippets expose data from your website. It's strongly recommen
 
 These allow Zapier to "subscribe" to services from your MODX site. Zapier provides a target URL for each subscription. The Zapier Extra in MODX is responsible for storing these target URLs, and the events on which to send a payload to each. You can manually remove a subscription using the Zapier Extra's Manager page (CMP) but generally your actions in the Zapier dashboard will result in the creation and deletion of subscriptions as needed.
 
-![Zapier Extra CMP in MODX](https://www.dropbox.com/s/2s96d2b4z2zksli/Screenshot%202015-11-20%2015.07.44.png?dl=1)
+![Zapier Extra CMP in MODX](https://www.sepiariver.ca/assets/uploads/images/Screenshot%202015-11-20%2015.07.44.png?dl=1)
 
 These two Snippets must be called in published MODX Resources, the URLs for which need to be entered into the Trigger Settings in your Zapier app. Upon installation, the Zapier Extra attempts to create these 2 Resources for you.
 
-![Zapier Extra Subscription Endpoints](https://www.dropbox.com/s/cl8qhqapssvq1n9/Screenshot%202015-11-20%2015.10.44.png?dl=1)
+![Zapier Extra Subscription Endpoints](https://www.sepiariver.ca/assets/uploads/images/Screenshot%202015-11-20%2015.10.44.png?dl=1)
 
 ### zapierSendFormToSubscribers / zapierPollSavedForms
 
@@ -73,6 +73,24 @@ _NOTES WHEN USING SUBSCRIPTIONS:_
 "zapierPollNewResources" is a Snippet that, when called in a Resource, creates a "polling" endpoint for newly created Resources. All the downsides of polling for new form submissions, described above, apply here. It's highly recommended that you use the subscription flow, and let the Plugin do its thing.
 
 As with forms, when using subscriptions, your Zapier app will require the polling Resource to be available as a "fallback". Thus, the Zapier Extra will attempt to install a sample Resource for you.
+
+## Troubleshooting
+
+If you're having problems, try to isolate the cause by asking a few questions:
+
+At what step is it failing? Are you getting redirected to the form that asks you to authorize?
+
+If not, check that you include the scheme "https:// before your URL. Using my app you don't do that, but when you setup your own app, you need to.
+
+Also the "response_type" URL parameter must be set to "code". I can't remember if I appended it to the authorization URL or if I added it as an auth field in my Zapier app, but if you're setting up your own, ensure that param is sent.
+
+If you are getting the authorization form, and after clicking "yes" you get an error, check the OAuth2Server CMP to see if an access_token was in fact created.
+
+If yes, your verification endpoint is failing. If no, the auth code delivery or the exchange for a token is failing.
+
+If the latter is the case, check that your Client ID and Client Secret don't have a trailing space character. Copy/pasting from the CMP can do this, for some unknown and aggravating reason.
+
+If your verification is failing, check that your app sends the access_token as a query parameter and NOT in the header. Token in header is not supported yet.
 
 ## Roadmap
 
